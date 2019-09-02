@@ -29,7 +29,7 @@ Creates a BankAccount
 Sample request:
 ```json
 {
-     id": 12,
+     "id": 12,
     "accountName": "Kamlesh",
     "currentBalance": 100
 }
