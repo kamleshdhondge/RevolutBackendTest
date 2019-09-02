@@ -23,25 +23,14 @@ import junit.framework.TestCase;
 
 public class BankAccountTest extends TestCase {
 
-	private static HttpServer server = App.startServer();
-	private static WebTarget target;
+	//private static HttpServer server = App.startServer();
+//	private static WebTarget target;
 
-	/*
-	 * @BeforeClass public static void beforeAll() { server = App.startServer();
-	 * Client c = ClientBuilder.newClient(); target = c.target(App.CONTEXT_URL); }
-	 * 
-	 * @AfterClass public static void afterAll() { server.shutdownNow(); }
-	 */
-	
-	@AfterClass
-    public static void afterAll() {
-        server.shutdownNow();
-    }
 	@Test
 	public void testGetAllBankAccounts() {
-		
+		HttpServer server = App.startServer();
 		Client c = ClientBuilder.newClient();
-		target = c.target(App.CONTEXT_URL);
+		WebTarget	target = c.target(App.CONTEXT_URL);
 		Response response = target.path(Constants.BANK_ACCOUNT_RESOURCE).request().get();
 
 		assertEquals(Response.Status.OK, response.getStatusInfo().toEnum());
@@ -51,14 +40,15 @@ public class BankAccountTest extends TestCase {
 
 		assertEquals(bankAccount.size(),
 				BankAccountDTOFactory.getInstance(BankDTOImplEnum.MAP).getAllBankAccounts().size());
-		
+		server.shutdownNow();
 	}
 
 	
 	@Test
 	public void testCreateBankAccountAndFetchById() {
+		HttpServer server = App.startServer();
 		Client c = ClientBuilder.newClient();
-		target = c.target(App.CONTEXT_URL);
+		WebTarget target = c.target(App.CONTEXT_URL);
 		
 		
 		BankAccountService bankAccoutService = new BankAccountService(BankDTOImplEnum.MAP);
@@ -79,7 +69,7 @@ public class BankAccountTest extends TestCase {
 		BankAccount createdAccount = bankAccoutService.getBankAccountById(returnedAccount.getId());
 
 		assertEquals(returnedAccount, (createdAccount));
-	
+		server.shutdownNow();
 	}
 
 	
