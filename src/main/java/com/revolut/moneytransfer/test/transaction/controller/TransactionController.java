@@ -37,7 +37,15 @@ public class TransactionController {
 	@GET
 	public Response getAllTransactons() {
 		debug("Inside getAllTransactons API");
+		/**
+		 * For Multithreading Debug purposes .
+		 */
+		debug(Thread.currentThread().getId() + "CurrentID ");
 		Collection<Transaction> allTransaction = transService.getAllTransactions();
+		
+		if(allTransaction == null) {
+			Response.noContent().build();
+		}
 		return Response.ok(allTransaction).build();
 	}
 
@@ -48,6 +56,11 @@ public class TransactionController {
 	@POST
 	public Response executeTransaction(Transaction transactionObj) throws Exception {
 		debug("Inside executeTransaction API");
+		
+		/**
+		 * For Multithreading Debug purposes .
+		 */
+		debug(Thread.currentThread().getId() + "CurrentID ");
 		return Response.ok( transService.executeTranscation(transactionObj)).build();
 	}
 

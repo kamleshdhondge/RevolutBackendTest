@@ -9,12 +9,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.revolut.moneytransfer.test.bankAccount.factory.BankDTOImplEnum;
 import com.revolut.moneytransfer.test.bankAccount.model.beans.BankAccount;
 import com.revolut.moneytransfer.test.bankAccount.service.BankAccountService;
+import com.revolut.moneytransfer.test.exceptions.AccountNotExistsException;
 import com.revolut.moneytransfer.test.util.Constants;
 /**
  * {@link BankAccount} controller which maps all the routes to server the business logic 
@@ -53,8 +55,11 @@ public class BankAccountController {
 	 */
 	@GET
 	public Response getAllBankAccounts()  {
-		System.out.println("Inside Get All");
+		debug("Inside Get All");
 		Collection<BankAccount> allBankAccounts = bankAccountService.getAllBankAccounts();
+		if(allBankAccounts == null) {
+			Response.noContent().build();
+		}
 		return Response.ok(allBankAccounts).build();
 	}
 
@@ -67,7 +72,16 @@ public class BankAccountController {
 	@GET
 	@Path("{id}") 
 	public Response getAllBankAccountById(@PathParam("id") Long id)  {
-		BankAccount  bankaccountbyId = bankAccountService.getBankAccountById(id);
-		return Response.ok(bankaccountbyId).build();
+		try {
+			BankAccount  bankaccountbyId = bankAccountService.getBankAccountById(id);
+			
+			
+			return Response.ok(bankaccountbyId).build();
+			
+		} catch(AccountNotExistsException accountDoesNotExists) {
+			 WebApplicationException webApplicationException = new  WebApplicationException("No Bank Account Found", Response.Status.NOT_FOUND);
+			 webApplicationException.initCause(accountDoesNotExists);
+			 throw(webApplicationException);
+		}
 	}
 }

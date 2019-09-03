@@ -9,26 +9,32 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.revolut.moneytransfer.test.App;
 import com.revolut.moneytransfer.test.bankAccount.factory.BankAccountDTOFactory;
 import com.revolut.moneytransfer.test.bankAccount.factory.BankDTOImplEnum;
 import com.revolut.moneytransfer.test.bankAccount.model.beans.BankAccount;
 import com.revolut.moneytransfer.test.bankAccount.service.BankAccountService;
+import com.revolut.moneytransfer.test.exceptions.AccountNotExistsException;
 import com.revolut.moneytransfer.test.util.Constants;
 
 import junit.framework.TestCase;
 
+/**All the test cases related to bank account.
+ * @author kamlesh
+ *
+ */
 public class BankAccountTest extends TestCase {
 
-	//private static HttpServer server = App.startServer();
-//	private static WebTarget target;
 
+
+	/**
+	 * Test for checking all bank accounts 
+	 */
 	@Test
 	public void testGetAllBankAccounts() {
-		HttpServer server = App.startServer();
+		HttpServer server = App.startServer(App.CONTEXT_URL);
 		Client c = ClientBuilder.newClient();
 		WebTarget	target = c.target(App.CONTEXT_URL);
 		Response response = target.path(Constants.BANK_ACCOUNT_RESOURCE).request().get();
@@ -44,9 +50,12 @@ public class BankAccountTest extends TestCase {
 	}
 
 	
+	/**
+	 * Test to fetch a bank account by ID
+	 */
 	@Test
 	public void testCreateBankAccountAndFetchById() {
-		HttpServer server = App.startServer();
+		HttpServer server = App.startServer(App.CONTEXT_URL);
 		Client c = ClientBuilder.newClient();
 		WebTarget target = c.target(App.CONTEXT_URL);
 		
@@ -71,9 +80,25 @@ public class BankAccountTest extends TestCase {
 		assertEquals(returnedAccount, (createdAccount));
 		server.shutdownNow();
 	}
+    
 
-	
-	
+
+    /**
+     * Test to get proper exception if the account does not exists
+     */
+    @Test(expected=AccountNotExistsException.class)
+    public void testGetNullBankAccount() {
+    	HttpServer server = App.startServer(App.CONTEXT_URL);
+		Client c = ClientBuilder.newClient();
+		WebTarget target = c.target(App.CONTEXT_URL);
+		
+		target.path(Constants.BANK_ACCOUNT_RESOURCE + "/10").request().get();
+
+        server.shutdown();
+    }
+
+
+  
 	
 
 

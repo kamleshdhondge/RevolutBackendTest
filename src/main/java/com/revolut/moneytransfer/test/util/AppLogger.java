@@ -24,14 +24,12 @@ public class AppLogger {
 	}
 
 	
-
-
 	 public static void error(String errorMessage) {
-			log.error(errorMessage);
+	  
 	  }
 	  
 	  public static void error(String errorMessage, Throwable e) {
-			log.error(errorMessage, e);
+	  
 	  }
 	 
 }

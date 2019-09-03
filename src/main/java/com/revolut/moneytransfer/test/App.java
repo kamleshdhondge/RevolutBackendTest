@@ -17,14 +17,14 @@ public class App
 
     public static void main(String[] args) throws IOException {
 
-        final HttpServer server = startServer();
+        final HttpServer server = startServer(CONTEXT_URL);
         System.in.read();
         server.shutdownNow();
     }
 
-    public static HttpServer startServer() {
+    public static HttpServer startServer(String customURL) {
         final ResourceConfig rc = new ResourceConfig().packages("com.revolut.moneytransfer.test.bankAccount.controller","com.revolut.moneytransfer.test.transaction.controller");
         rc.property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, "true");
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(CONTEXT_URL), rc);
+        return GrizzlyHttpServerFactory.createHttpServer(URI.create(customURL), rc);
     }
 }

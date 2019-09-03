@@ -73,7 +73,7 @@ public class TransactionDTOMap  implements TransactionInterface{
 		if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
 			transactionObj.setStatus(TransEnum.FAILED);
 			courrencyLock.unlock();
-			transactionObj.setFailMessage(String.format("There is no enough money. Current balance is %f",
+			transactionObj.setFailMessage(String.format("Not Enough Money, Current Balance: %f",
 					fromBankAccount.getCurrentBalance().doubleValue()));
 			throw(new NotEnoughMoneyException( fromBankAccount.getId()));
 		} else {
